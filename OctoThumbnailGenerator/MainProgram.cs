@@ -59,8 +59,8 @@ namespace OctoThumbnailGenerator
                     "#" + version,
                     FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri"),
                     (int)FontStyle.Bold,
-                    g.DpiY * 275 / 72,
-                    new Point(740, 400),
+                    g.DpiY * 275 / 90,
+                    new Point(540, 300),
                     new StringFormat());
                 g.DrawPath(pen, p);
                 g.FillPath(b, p);
