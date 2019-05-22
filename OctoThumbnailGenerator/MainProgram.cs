@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 
 namespace OctoThumbnailGenerator
 {
@@ -18,10 +19,11 @@ namespace OctoThumbnailGenerator
                 Directory.CreateDirectory("Fertige Thumbnails");
             Directory.SetCurrentDirectory("Fertige Thumbnails");
             Image newBmp;
-            Brush b = new SolidBrush(Color.FromArgb(255, 36, 163, 179));
+            Brush b = new SolidBrush(Color.FromArgb(255, 254, 0, 0));
             Pen pen = new Pen(Color.Black, 10);
             Console.ForegroundColor = ConsoleColor.White;
-            for (fromNumberInclusive = fromNumberInclusive; fromNumberInclusive <= toNumberInclusive; fromNumberInclusive++)
+            var fam = FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri");
+            for (; fromNumberInclusive <= toNumberInclusive; fromNumberInclusive++)
             {
                 newBmp = (Image)bitmap.Clone();
                 using (Graphics g = Graphics.FromImage(newBmp))
@@ -29,10 +31,10 @@ namespace OctoThumbnailGenerator
                     GraphicsPath p = new GraphicsPath();
                     p.AddString(
                         "#" + fromNumberInclusive,
-                        FontFamily.GenericSansSerif,
+                        fam,
                         (int)FontStyle.Bold,
-                        g.DpiY * 275 / 72,
-                        new Point(3, 58),
+                        g.DpiY * 275 / 90,
+                        new Point(540, 300),
                         new StringFormat());
                     g.DrawPath(pen, p);
                     g.FillPath(b, p);
@@ -48,17 +50,17 @@ namespace OctoThumbnailGenerator
         public static Image GenerateThumbnail(int version)
         {
             Image newBmp = Image.FromFile("octoawesome.png");
-            Brush b = new SolidBrush(Color.FromArgb(255, 36, 163, 179));
+            Brush b = new SolidBrush(Color.FromArgb(255, 254, 0, 0));
             Pen pen = new Pen(Color.Black, 10);
             using (Graphics g = Graphics.FromImage(newBmp))
             {
                 GraphicsPath p = new GraphicsPath();
                 p.AddString(
                     "#" + version,
-                    FontFamily.GenericSansSerif,
+                    FontFamily.Families.FirstOrDefault(f => f.Name == "Calibri"),
                     (int)FontStyle.Bold,
-                    g.DpiY * 275 / 72,
-                    new Point(3, 58),
+                    g.DpiY * 275 / 90,
+                    new Point(540, 300),
                     new StringFormat());
                 g.DrawPath(pen, p);
                 g.FillPath(b, p);

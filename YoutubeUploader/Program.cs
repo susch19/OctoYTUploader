@@ -90,7 +90,7 @@ namespace YoutubeUploader
                 },
                 Status = new VideoStatus
                 {
-                    PrivacyStatus = "unlisted"
+                    PrivacyStatus = "private"
                 },
             };
 
