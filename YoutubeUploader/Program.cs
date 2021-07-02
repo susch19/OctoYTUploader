@@ -5,11 +5,13 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+
 using OctoThumbnailGenerator;
 
 namespace YoutubeUploader
@@ -37,7 +39,7 @@ namespace YoutubeUploader
                     foreach (var item in fd.FileNames)
                     {
                         var fileSize = new FileInfo(item).Length;
-                        consolePositions.TryAdd(item, (Console.CursorTop, fileSize/1024/1024));
+                        consolePositions.TryAdd(item, (Console.CursorTop, fileSize / 1024 / 1024));
                         Console.WriteLine(item.Substring(item.LastIndexOf("\\") + 1, item.Length - item.LastIndexOf("\\") - 1 - 4) + $": 0 MB of {fileSize / 1024 / 1024} MB sent.");
                     }
                     foreach (var item in fd.FileNames)
@@ -129,11 +131,10 @@ namespace YoutubeUploader
             Console.CursorTop = consolePositions[fileName].consoleTop;
             Console.WriteLine("{0} '{1}' was successfully uploaded.".PadRight(Console.WindowWidth, ' '), video.Snippet.Title, video.Id);
             video.ProcessingDetails = new VideoProcessingDetails();
-            
+
             using (var stream = new MemoryStream())
             {
-                var image = MainProgram.GenerateThumbnail(int.Parse(fileName.Substring(fileName.LastIndexOf("[") + 4, fileName.LastIndexOf("]") - fileName.LastIndexOf("[") - 4)));
-                image.Save(stream, image.RawFormat);
+                OctoThumbnailGenerator.MainProgramm.GenerateThumbnail(int.Parse(fileName.Substring(fileName.LastIndexOf("[") + 4, fileName.LastIndexOf("]") - fileName.LastIndexOf("[") - 4)), stream);
                 smu.Set(video.Id, stream, "image/png").Upload();
             }
         }

@@ -23,6 +23,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OctoThumbnailGenerator\OctoThumbnailGenerator.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="client_secrets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
