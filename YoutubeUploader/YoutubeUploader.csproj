@@ -6,10 +6,6 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OctoThumbnailGenerator\OctoThumbnailGenerator.csproj">
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Google.Apis">
       <Version>1.52.0</Version>
     </PackageReference>
