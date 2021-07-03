@@ -30,7 +30,7 @@ namespace YoutubeUploader
             try
             {
 
-                var fd = new OpenFileDialog
+                using var fd = new OpenFileDialog
                 {
                     Multiselect = true,
                     Filter = "Video files|*.mp4"
@@ -45,7 +45,6 @@ namespace YoutubeUploader
                     }
                     foreach (var item in fd.FileNames)
                     {
-                        var n = item.Substring(item.LastIndexOf("[") + 4, item.LastIndexOf("]") - item.LastIndexOf("[") - 4);
                         Run(item).Wait();
                     }
                     //Parallel.ForEach(fd.FileNames, (item) =>
@@ -73,14 +72,14 @@ namespace YoutubeUploader
             using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
+                    GoogleClientSecrets.FromStream(stream).Secrets,
                     new[] { YouTubeService.Scope.YoutubeUpload },
                     "susch19",
                     CancellationToken.None
                 );
             }
 
-            var youTubeService = new YouTubeService(new BaseClientService.Initializer()
+            using var youTubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
                 ApplicationName = Assembly.GetExecutingAssembly().GetName().Name,
