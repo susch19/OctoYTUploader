@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -43,13 +44,15 @@ namespace YoutubeUploader
                         Console.WriteLine(item.Substring(item.LastIndexOf("\\") + 1, item.Length - item.LastIndexOf("\\") - 1 - 4) + $": 0 MB of {fileSize / 1024 / 1024} MB sent.");
                     }
                     foreach (var item in fd.FileNames)
+                    {
+                        var n = item.Substring(item.LastIndexOf("[") + 4, item.LastIndexOf("]") - item.LastIndexOf("[") - 4);
                         Run(item).Wait();
+                    }
                     //Parallel.ForEach(fd.FileNames, (item) =>
                     //    {
                     //        Run(item).Wait();
                     //    });
                 }
-
             }
             catch (AggregateException ex)
             {
@@ -59,6 +62,8 @@ namespace YoutubeUploader
                 }
             }
 
+            Console.WriteLine();
+            Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         }
@@ -70,7 +75,7 @@ namespace YoutubeUploader
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
                     new[] { YouTubeService.Scope.YoutubeUpload },
-                    "Noob Dev Gedöns",
+                    "susch19",
                     CancellationToken.None
                 );
             }
@@ -78,7 +83,8 @@ namespace YoutubeUploader
             var youTubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = Assembly.GetExecutingAssembly().GetName().Name
+                ApplicationName = Assembly.GetExecutingAssembly().GetName().Name,
+                
             });
 
             var video = new Video
@@ -135,7 +141,11 @@ namespace YoutubeUploader
             using (var stream = new MemoryStream())
             {
                 OctoThumbnailGenerator.MainProgramm.GenerateThumbnail(int.Parse(fileName.Substring(fileName.LastIndexOf("[") + 4, fileName.LastIndexOf("]") - fileName.LastIndexOf("[") - 4)), stream);
-                smu.Set(video.Id, stream, "image/png").Upload();
+                stream.Seek(0, SeekOrigin.Begin);
+                
+                var response = smu.Set(video.Id, stream, "image/png").Upload();
+                if(response.Status == UploadStatus.Failed)
+                    Console.WriteLine("{0} '{1}' Thumbnail set failed. {2}".PadRight(Console.WindowWidth, ' '), video.Snippet.Title, video.Id, response.Exception.Message);
             }
         }
     }
